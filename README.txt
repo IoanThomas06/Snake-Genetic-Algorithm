@@ -11,3 +11,5 @@ The program implements a genetic algorithm which can be used to train a feed for
 A partially trained example is included through the other .txt files, the file names will include 'NNBrainKiddo'. Place all of these in the debug bin to be able to load the brain.
 
 An accompanying word document will be included at some point to show the training and design of the machine learning model.
+
+Videos recorded for this A Level project can be found here: https://www.youtube.com/watch?v=2T_-c9PdSec&list=PLhD8zzUVkhu0Ev-lSxAOIycrH3mqEnwkp&pp=gAQBiAQB.
