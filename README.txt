@@ -1,6 +1,3 @@
-What is cracka lacking mofos.
-This is the README, so pay a-fcking-ttention.
-
 The program here was designed as part of an A-Level project.
 
 The program represents an example implementation of the library/API MlApi.Snake, which can be found on NuGet here: https://www.nuget.org/packages/MLAPINET.Snake/.
