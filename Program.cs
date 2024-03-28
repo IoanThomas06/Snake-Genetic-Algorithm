@@ -1,6 +1,6 @@
 ﻿/*-----------------------------|
 |Author     Ioan Steffan Thomas|
-|Product Date        15/03/2024|
+|Product Date        28/03/2024|
 |-----------------------------*/
 using System;
 using System.IO;
@@ -21,7 +21,7 @@ namespace ImplementingExample
                 Console.Clear();
 
                 Game game = Game.Setup(typeof(Brains));
-                game.RunGameForDisplay(1000, 0.25);
+                game.RunGameForDisplay(10000, 0.25);
 
                 Console.WriteLine("Enter 'c' or 'cont' to run another program;\nLeave blank or enter alternative text to exit program");
                 if ((new string[] { "c", "cont" }).Contains(Console.ReadLine().ToLower()) == false)
