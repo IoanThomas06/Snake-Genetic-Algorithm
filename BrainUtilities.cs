@@ -66,15 +66,12 @@ namespace ImplementationExamples
                 || gameState.BoardMatrix[gameState.Head.Row + gameState.HeadDirectionNESW.Row, gameState.Head.Column] == true
                 );
             }
-            else if (gameState.HeadDirectionNESW.Column != 0)
-            {
-                return (
-                gameState.Head.Column + gameState.HeadDirectionNESW.Column == Game.BoardSize
-                || gameState.Head.Column + gameState.HeadDirectionNESW.Column < 0
-                || gameState.BoardMatrix[gameState.Head.Row, gameState.Head.Column + gameState.HeadDirectionNESW.Column] == true
-                );
-            }
-            return false;
+            //else: gameState.HeadDirectionNESW.Column != 0
+            return (
+            gameState.Head.Column + gameState.HeadDirectionNESW.Column == Game.BoardSize
+            || gameState.Head.Column + gameState.HeadDirectionNESW.Column < 0
+            || gameState.BoardMatrix[gameState.Head.Row, gameState.Head.Column + gameState.HeadDirectionNESW.Column] == true
+            );
         }
 
         public static bool CheckToRightOfHeadBlocked(Game.GameState gameState)
