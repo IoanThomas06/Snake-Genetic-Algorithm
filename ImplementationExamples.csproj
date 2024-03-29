@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MLAPI\MLAPINET.Snake.csproj" />
+    <ProjectReference Include="MlApiNet.Snake" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
