@@ -1,6 +1,6 @@
 ﻿/*-----------------------------|
 |Author     Ioan Steffan Thomas|
-|Product Date        15/03/2024|
+|Product Date        28/03/2024|
 |-----------------------------*/
 using System;
 using MlApiNet.Snake;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using MathNet.Numerics.Data.Text;
-using ImplementationExamples;
+using static ImplementationExamples.BrainUtilities;
 
 namespace ImplementingExample
 {
@@ -41,13 +41,11 @@ namespace ImplementingExample
 
             private void InitialiseWeights()
             {
-                Weights = new Matrix<double>[NumberOfLayers - 1];
                 Normal normal = new Normal();
+                Weights = new Matrix<double>[NumberOfLayers - 1];
                 for (int layerIndex = 0; layerIndex < NumberOfLayers - 1; layerIndex++)
                 {
-                    int columns = Sizes[layerIndex];
-                    int rows = Sizes[layerIndex + 1];
-                    Weights[layerIndex] = Matrix<double>.Build.Random(rows, columns, normal);// / Math.Sqrt(columns)
+                    Weights[layerIndex] = Matrix<double>.Build.Random(Sizes[layerIndex + 1], Sizes[layerIndex], normal);
                 }
             }
 
@@ -68,24 +66,22 @@ namespace ImplementingExample
                     gameState.HeadDirectionNESW.Column,
                     gameState.Apple.Row - gameState.Head.Row,
                     gameState.Apple.Column - gameState.Head.Column,
-                    BrainUtilities.CheckInFrontOfHeadBlocked(gameState) ? 1.0 : 0.0,
-                    BrainUtilities.CheckToRightOfHeadBlocked(gameState) ? 1.0 : 0.0,
-                    BrainUtilities.CheckToLeftOfHeadBlocked(gameState) ? 1.0 : 0.0
+                    CheckInFrontOfHeadBlocked(gameState) ? 1.0 : 0.0,
+                    CheckToRightOfHeadBlocked(gameState) ? 1.0 : 0.0,
+                    CheckToLeftOfHeadBlocked(gameState) ? 1.0 : 0.0
                 };
 
             }
 
             public int DecideNextMove(Game.GameState gameState)
             {
-                switch (FeedForward(Vector<double>.Build.DenseOfArray(GetInputVector(gameState))).MaximumIndex())
+                // default case only occurs for values: 1
+                return FeedForward(Vector<double>.Build.DenseOfArray(GetInputVector(gameState))).MaximumIndex() switch
                 {
-                    case 0:
-                        return -1;
-                    case 2:
-                        return 1;
-                    default:
-                        return 0;
-                }
+                    0 => -1,
+                    2 => 1,
+                    _ => 0
+                };
             }
 
             private void AssignInstanceToThis(NNBrain brain)
@@ -126,7 +122,6 @@ namespace ImplementingExample
             {
                 Random random = new Random();
                 NNBrain child = new NNBrain();
-
                 for (int weightLayerIndex = 0; weightLayerIndex < child.Weights.Length; weightLayerIndex++)
                 {
                     for (int i = 0; i < child.Weights[weightLayerIndex].RowCount; i++)
@@ -145,15 +140,16 @@ namespace ImplementingExample
                 Random random = new Random();
                 Normal normal = new Normal();
                 Matrix<double> weightsMatrix = Weights[random.Next(0, Weights.Length)];
-                weightsMatrix[random.Next(0, weightsMatrix.RowCount), random.Next(0, weightsMatrix.ColumnCount)] = normal.Sample();// / Math.Sqrt(weightsMatrix.ColumnCount)
+                weightsMatrix[random.Next(0, weightsMatrix.RowCount), random.Next(0, weightsMatrix.ColumnCount)] = normal.Sample();
             }
 
-            private static NNBrain[] Repopulate(NNBrain[] population, int numberOfParents, int mutationPercentageProbability, int maxMutationsPerIndividual = 1)
+            // previously Repopulate
+            private static NNBrain[] GetNextGeneration(NNBrain[] population, int numberOfParents, int mutationPercentageProbability, int maxMutationsPerIndividual = 1)
             {
                 Random random = new Random();
                 for (int i = numberOfParents; i < population.Length; i++)
                 {
-                    population[i] = Reproduce(GetRandomParentPair(population.Take(numberOfParents).ToArray()));
+                    population[i] = Reproduce(GetRandomParentPair(population[..numberOfParents]));
                     int mutationCount = 0;
                     while (mutationCount != maxMutationsPerIndividual && random.Next(0, 100) < mutationPercentageProbability)
                     {
@@ -221,7 +217,7 @@ namespace ImplementingExample
                     }
                     population = population.OrderByDescending(individual => individual.Fitness).ToArray();
 
-                    population = Repopulate(population, NumberOfParents, MutationProbability, MaxMutationsPerIndividual);
+                    population = GetNextGeneration(population, NumberOfParents, MutationProbability, MaxMutationsPerIndividual);
 
                     // for incremental saves based on generation
                     if (generation % 5000 == 0)
@@ -238,12 +234,15 @@ namespace ImplementingExample
                         }
                         Console.WriteLine($"[LOGGED] Generation: {generation, 9} | Fitness: {population[0].Fitness}");
                     }
+
                     generation++;
                 }
                 AssignInstanceToThis(population[0]);
             }
 
             // add to these implementations (for ILoadable) the number of layers as first entry to file in future trainings
+            // maybe add training and hyperparameters as instance members to be saved? wouldn't need to adjust so many on second stage
+            // potentially a separata file for the training params
             public void Save(string fileName)
             {
                 using (StreamWriter streamWriter = new StreamWriter(Loader.FormatFileName(fileName, typeof(NNBrain), ".txt"), false))

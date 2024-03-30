@@ -1,6 +1,6 @@
 ﻿/*-----------------------------|
 |Author     Ioan Steffan Thomas|
-|Product Date        15/03/2024|
+|Product Date        28/03/2024|
 |-----------------------------*/
 using MlApiNet.Snake;
 using System;
@@ -13,16 +13,12 @@ namespace ImplementingExample
         {
             public int DecideNextMove(Game.GameState gameState)
             {
-                ConsoleKeyInfo input = Console.ReadKey();
-                if (input.Key.ToString() == "D")
+                return Console.ReadKey().Key.ToString() switch
                 {
-                    return 1;
-                }
-                else if (input.Key.ToString() == "A")
-                {
-                    return -1;
-                }
-                return 0;
+                    "D" => 1,
+                    "A" => -1,
+                    _ => 0
+                };
             }
         }
     }

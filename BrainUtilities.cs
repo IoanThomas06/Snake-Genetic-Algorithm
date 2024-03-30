@@ -10,50 +10,34 @@ namespace ImplementationExamples
     {
         private static bool CheckColumnIncrementBlocked(Game.GameState gameState)
         {
-            if (
-                    gameState.Head.Column + 1 == Game.BoardSize
-                    || gameState.BoardMatrix[gameState.Head.Row, gameState.Head.Column + 1] == true
-                    )
-            {
-                return true;
-            }
-            return false;
+            return (
+            gameState.Head.Column + 1 == Game.BoardSize
+            || gameState.BoardMatrix[gameState.Head.Row, gameState.Head.Column + 1] == true
+            );
         }
 
         private static bool CheckColumnDecrementBlocked(Game.GameState gameState)
         {
-            if (
-                    gameState.Head.Column - 1 < 0
-                    || gameState.BoardMatrix[gameState.Head.Row, gameState.Head.Column - 1] == true
-                    )
-            {
-                return true;
-            }
-            return false;
+            return (
+            gameState.Head.Column - 1 < 0
+            || gameState.BoardMatrix[gameState.Head.Row, gameState.Head.Column - 1] == true
+            );
         }
 
         private static bool CheckRowIncrementBlocked(Game.GameState gameState)
         {
-            if (
-                    gameState.Head.Row + 1 == Game.BoardSize
-                    || gameState.BoardMatrix[gameState.Head.Row + 1, gameState.Head.Column] == true
-                    )
-            {
-                return true;
-            }
-            return false;
+            return (
+            gameState.Head.Row + 1 == Game.BoardSize
+            || gameState.BoardMatrix[gameState.Head.Row + 1, gameState.Head.Column] == true
+            );
         }
 
         private static bool CheckRowDecrementBlocked(Game.GameState gameState)
         {
-            if (
-                gameState.Head.Row - 1 < 0
-                || gameState.BoardMatrix[gameState.Head.Row - 1, gameState.Head.Column] == true
-                )
-            {
-                return true;
-            }
-            return false;
+            return (
+            gameState.Head.Row - 1 < 0
+            || gameState.BoardMatrix[gameState.Head.Row - 1, gameState.Head.Column] == true
+            );
         }
 
         public static bool CheckInFrontOfHeadBlocked(Game.GameState gameState)
@@ -66,7 +50,7 @@ namespace ImplementationExamples
                 || gameState.BoardMatrix[gameState.Head.Row + gameState.HeadDirectionNESW.Row, gameState.Head.Column] == true
                 );
             }
-            //else: gameState.HeadDirectionNESW.Column != 0
+            //else only occurs when: gameState.HeadDirectionNESW.Column != 0
             return (
             gameState.Head.Column + gameState.HeadDirectionNESW.Column == Game.BoardSize
             || gameState.Head.Column + gameState.HeadDirectionNESW.Column < 0
@@ -76,36 +60,26 @@ namespace ImplementationExamples
 
         public static bool CheckToRightOfHeadBlocked(Game.GameState gameState)
         {
-            if (gameState.HeadDirectionNESW.Row == 1)
+            // default case only occurs for patterns: (0, -1)
+            return (gameState.HeadDirectionNESW.Row, gameState.HeadDirectionNESW.Column) switch
             {
-                return CheckColumnIncrementBlocked(gameState);
-            }
-            else if (gameState.HeadDirectionNESW.Row == -1)
-            {
-                return CheckColumnDecrementBlocked(gameState);
-            }
-            else if (gameState.HeadDirectionNESW.Column == 1)
-            {
-                return CheckRowDecrementBlocked(gameState);
-            }
-            return CheckRowIncrementBlocked(gameState);
+                (1, 0)  => CheckColumnIncrementBlocked(gameState),
+                (-1, 0) => CheckColumnDecrementBlocked(gameState),
+                (0, 1)  => CheckRowDecrementBlocked(gameState),
+                _ => CheckRowIncrementBlocked(gameState)
+            };
         }
 
         public static bool CheckToLeftOfHeadBlocked(Game.GameState gameState)
         {
-            if (gameState.HeadDirectionNESW.Row == 1)
+            // default case only occurs for patterns: (0, -1)
+            return (gameState.HeadDirectionNESW.Row, gameState.HeadDirectionNESW.Column) switch
             {
-                return CheckColumnDecrementBlocked(gameState);
-            }
-            else if (gameState.HeadDirectionNESW.Row == -1)
-            {
-                return CheckColumnIncrementBlocked(gameState);
-            }
-            else if (gameState.HeadDirectionNESW.Column == 1)
-            {
-                return CheckRowIncrementBlocked(gameState);
-            }
-            return CheckRowDecrementBlocked(gameState);
+                (1, 0) => CheckColumnDecrementBlocked(gameState),
+                (-1, 0) => CheckColumnIncrementBlocked(gameState),
+                (0, 1) => CheckRowIncrementBlocked(gameState),
+                _ => CheckRowDecrementBlocked(gameState)
+            };
         }
     }
 }
