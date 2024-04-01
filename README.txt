@@ -1,6 +1,6 @@
 The program here was designed as part of an A-Level project.
 
-The program represents an example implementation of the library/API MlApiNet.Snake v1.1.2, which can be found on NuGet here: https://www.nuget.org/packages/MLAPINET.Snake/.
+The program represents an example implementation of the library/API MlApiNet.Snake v1.1.4+, which can be found on NuGet here: https://www.nuget.org/packages/MLAPINET.Snake/.
 
 The program also makes use of MathNet.Numerics v5.0.0, NuGet: https://www.nuget.org/packages/MathNet.Numerics/.
 
